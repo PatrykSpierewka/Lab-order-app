@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lekarz</title>
+</head>
+<body>
+    <h1>Lekarz</h1>
+    <a href="{% url 'logout' %}">Wyloguj</a>
+
+    <h2>Do uzupełnienia notatki:</h2>
+    <ul>
+        {% for package in pending_packages %}
+            <li>
+                <strong>Pacjent:</strong> {{ package.username }} <br>
+                <strong>Laborant:</strong> {{ package.lab_username }} <br>
+                <strong>Diagnoza:</strong> {{ package.doctor_notes }} <br>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="package_id" value="{{ package.pk }}">
+                    <textarea name="doctor_notes">{{ package.doctor_notes }}</textarea>
+                    <button type="submit" class="btn">Zapisz diagnozę</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Laboratorium</title>
+</head>
+<body>
+    <h1>Laboratorium</h1>
+    <a href="{% url 'logout' %}">Wyloguj</a>
+
+    <h2>Uzupełnij wyniki badań:</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Zapisz wyniki</button>
+    </form>
+
+    <h2>Nieuzupełnione pakiety do badania:</h2>
+    <ul>
+        {% for package in ordered_packages %}
+        <li>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="package_id" value="{{ package.pk }}">
+                <button type="submit" class="btn">{{ package.user.username }} - {{ package.get_package_display }} (Zamówione: {{ package.date_ordered }})</button>
+            </form>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="package_id" value="{{ package.pk }}">
+                {{ form.glucose }}
+                {{ form.red_blood_cells }}
+                {{ form.white_blood_cells }}
+                {% if package.package == 'full' %}
+                    {{ form.tsh }}
+                    {{ form.ft3 }}
+                    {{ form.ft4 }}
+                {% endif %}
+                <button type="submit" class="btn">Zapisz wyniki</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacjent</title>
+</head>
+<body>
+    <h1>Pacjent</h1>
+    <a href="{% url 'logout' %}">Wyloguj</a>
+
+    <h1>Wybierz pakiet badań</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Wybierz</button>
+    </form>
+
+    <h2>Opis pakietów badań:</h2>
+    <div class="package">
+        <h3>Podstawowy pakiet zdrowia</h3>
+        <ul>
+            <li>Badanie glukozy</li>
+            <li>Badanie poziomu czerwonych krwinek</li>
+            <li>Badanie poziomu białych krwinek</li>
+            <li>Cena: 70 PLN</li>
+        </ul>
+    </div>
+    <div class="package">
+        <h3>Pełny pakiet zdrowia</h3>
+        <ul>
+            <li>Badanie glukozy</li>
+            <li>Badanie poziomu czerwonych krwinek</li>
+            <li>Badanie poziomu białych krwinek</li>
+            <li>Badanie TSH</li>
+            <li>Badanie FT3</li>
+            <li>Badanie FT4</li>
+            <li>Cena: 100 PLN</li>
+        </ul>
+    </div>
+
+    <h2>Wybrane przez Ciebie badania:</h2>
+    <ul>
+        {% for package in ordered_packages %}
+            <li>{{ package.get_package_display }} (Zamówione: {{ package.date_ordered }})</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Uzupełnione badania:</h2>
+    <ul>
+        {% for package in completed_packages %}
+            <li>
+                {{ package.get_package_display }} (Zamówione: {{ package.date_ordered }}) Uzupełnił: {{ package.lab_username }}
+                <ul>
+                    <li>Glukoza: {{ package.glucose }}</li>
+                    <li>Poziom czerwonych krwinek: {{ package.red_blood_cells }}</li>
+                    <li>Poziom białych krwinek: {{ package.white_blood_cells }}</li>
+                    {% if package.package == 'full' %}
+                        <li>TSH: {{ package.tsh }}</li>
+                        <li>FT3: {{ package.ft3 }}</li>
+                        <li>FT4: {{ package.ft4 }}</li>
+                    {% endif %}
+                    {% if package.doctor_notes %}
+                        <li>Notatka lekarza: {{ package.doctor_notes }}</li>
+                        <li>Lekarz: {{ package.doctor_username }}</li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
